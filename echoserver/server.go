@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/mdesson/ew/consts"
+	"github.com/mdesson/ew/util"
 	"io"
 	"log"
 	"log/slog"
@@ -66,6 +67,7 @@ func (s *Server) listenHandler(w http.ResponseWriter, r *http.Request) {
 	case "application/x-www-form-urlencoded":
 		str, err = printURLEncoded(r)
 	case "multipart/form-data":
+		fmt.Println("BOOOOOOOOOP")
 		err = errors.New("multipart/form-data is not supported")
 	default:
 		str, err = printBodyToString(r)
@@ -73,8 +75,8 @@ func (s *Server) listenHandler(w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		l.Error(err.Error())
-		details.Err = err
-	} else {
+		details.ErrorMsg = util.Ptr(err.Error())
+	} else if str != "" {
 		details.Body = &str
 	}
 

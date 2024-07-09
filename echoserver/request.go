@@ -12,7 +12,7 @@ type RequestDetails struct {
 	QueryParams map[string]string `json:"query_params"`
 	Headers     map[string]string `json:"headers"`
 	Body        *string           `json:"body,omitempty"`
-	Err         error             `json:"error,omitempty"`
+	ErrorMsg    *string           `json:"error,omitempty"`
 }
 
 func (d RequestDetails) String() string {
@@ -34,9 +34,9 @@ func (d RequestDetails) String() string {
 		str += fmt.Sprintf("\n%s", *d.Body)
 	}
 
-	if d.Err != nil {
+	if d.ErrorMsg != nil {
 		str += "\nERROR"
-		str += fmt.Sprintf("\n%s", d.Err)
+		str += fmt.Sprintf("\n%s", d.ErrorMsg)
 	}
 
 	return str
