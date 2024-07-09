@@ -15,20 +15,21 @@ import (
 )
 
 type Server struct {
-	l        *slog.Logger
-	port     int
-	Requests []RequestDetails
+	l       *slog.Logger
+	port    int
+	reqChan chan RequestDetails
 }
 
-func New(port int, l *slog.Logger) *Server {
-	return &Server{port: port, l: l, Requests: make([]RequestDetails, 0)}
+func New(port int, l *slog.Logger, reqChan chan RequestDetails) *Server {
+	return &Server{port: port, l: l, reqChan: reqChan}
 }
 
 func (s *Server) Start() {
-	http.HandleFunc("/", s.listenHandler)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", s.listenHandler)
 
 	s.l.With(consts.FieldFunction, "start")
-	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", s.port), nil))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%d", s.port), mux))
 }
 
 func (s *Server) listenHandler(w http.ResponseWriter, r *http.Request) {
@@ -43,7 +44,7 @@ func (s *Server) listenHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer func() {
-		s.Requests = append(s.Requests, details)
+		s.reqChan <- details
 	}()
 
 	// add headers
@@ -74,7 +75,7 @@ func (s *Server) listenHandler(w http.ResponseWriter, r *http.Request) {
 		l.Error(err.Error())
 		details.Err = err
 	} else {
-		details.Body = str
+		details.Body = &str
 	}
 
 	l.Debug(details.String())

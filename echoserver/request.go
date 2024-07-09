@@ -6,13 +6,13 @@ import (
 )
 
 type RequestDetails struct {
-	Date        time.Time
-	Method      string
-	Path        string
-	QueryParams map[string]string
-	Headers     map[string]string
-	Body        string
-	Err         error
+	Date        time.Time         `json:"date"`
+	Method      string            `json:"method"`
+	Path        string            `json:"path"`
+	QueryParams map[string]string `json:"query_params"`
+	Headers     map[string]string `json:"headers"`
+	Body        *string           `json:"body,omitempty"`
+	Err         error             `json:"error,omitempty"`
 }
 
 func (d RequestDetails) String() string {
@@ -29,9 +29,9 @@ func (d RequestDetails) String() string {
 		str += fmt.Sprintf("\n%s=%s", k, v)
 	}
 
-	if d.Body != "" {
+	if d.Body != nil {
 		str += "\nBODY"
-		str += fmt.Sprintf("\n%s", d.Body)
+		str += fmt.Sprintf("\n%s", *d.Body)
 	}
 
 	if d.Err != nil {
