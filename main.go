@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"github.com/mdesson/ew/server"
+	"log/slog"
+)
 
 func main() {
-	fmt.Println("sup")
+	s := server.New(3000, slog.Default())
+	s.Start()
 }
