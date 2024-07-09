@@ -77,7 +77,7 @@ func (s *Server) listenHandler(w http.ResponseWriter, r *http.Request) {
 		details.Body = str
 	}
 
-	fmt.Println(details)
+	l.Debug(details.String())
 
 	w.WriteHeader(http.StatusOK)
 }
