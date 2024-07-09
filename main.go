@@ -1,11 +1,11 @@
 package main
 
 import (
-	"github.com/mdesson/ew/server"
+	"github.com/mdesson/ew/echoserver"
 	"log/slog"
 )
 
 func main() {
-	s := server.New(3000, slog.Default())
+	s := echoserver.New(3000, slog.Default())
 	s.Start()
 }
